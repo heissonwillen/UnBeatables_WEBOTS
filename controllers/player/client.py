@@ -1,5 +1,7 @@
 import sys
 
+from robot_client import *
+
 
 def usage(error_msg=None):
     if error_msg:
@@ -35,3 +37,5 @@ if __name__ == '__main__':
 
     if (port == -1):
         usage("Missing arguments")
+
+    client = RobotClient(host, port, verbosity)
