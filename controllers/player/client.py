@@ -39,3 +39,4 @@ if __name__ == '__main__':
         usage("Missing arguments")
 
     client = RobotClient(host, port, verbosity)
+    client.connect_client()
