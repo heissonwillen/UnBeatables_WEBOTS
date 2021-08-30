@@ -20,9 +20,9 @@ class RobotClient():
 
     def connect_client(self):
         server = socket.gethostbyname(self.host)
-        socket_fd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket_fd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not socket_fd:
+        if self.socket_fd == -1:
             if self.verbosity > 0:
                 print("Cannot create socket")
             return False
@@ -30,7 +30,7 @@ class RobotClient():
         connected = False
         for attempt in range(1, RobotClient.max_attempts+1):
             try:
-                socket_fd.connect((server, self.port))
+                self.socket_fd.connect((server, self.port))
                 connected = True
                 break
             except Exception:
@@ -42,10 +42,10 @@ class RobotClient():
             if self.verbosity > 0:
                 print(
                     "Failed to connect after {attempt} attempts. Giving up on connection")
-                socket_fd.close()
+                self.disconnect_client()
             return False
 
-        answer = socket_fd.recv(8).decode("utf-8")
+        answer = self.socket_fd.recv(8).decode("utf-8")
         if self.verbosity >= 4:
             print("Welcome message: {answer}")
         if not "Welcome" in answer:
@@ -55,17 +55,18 @@ class RobotClient():
                         f"Connection to {self.host}:{self.port} refused: your IP address is not allowed in the game.json configuration file.")
                 else:
                     print(f"Received unknown answer from server: {answer}")
-            socket_fd.close()
+            self.disconnect_client()
             return False
         if self.verbosity >= 2:
             print(f"Connected to {self.host}:{self.port}")
         return True
 
-    # def disconnect_client(self):
-    #     try:
-    #         socket_fd.close()
-    #     except Exception:
-    #         print("RobotClient is already disconnected")
+    def disconnect_client(self):
+        if self.socket_fd == -1 and self.verbosity > 0:
+            print("RobotClient is already disconnected")
+            return
+        self.socket_fd.close()
+        self.socket_fd = -1
 
     def send_request(self):
         pass
