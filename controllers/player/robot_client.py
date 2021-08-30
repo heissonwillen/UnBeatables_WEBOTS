@@ -72,7 +72,7 @@ class RobotClient():
         pass
 
     def is_ok(self):
-        pass
+        return self.socket_fd != -1
 
     def receive_data(self):
         pass

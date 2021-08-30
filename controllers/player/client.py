@@ -40,3 +40,5 @@ if __name__ == '__main__':
 
     client = RobotClient(host, port, verbosity)
     client.connect_client()
+
+    print(client.is_ok())
