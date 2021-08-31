@@ -1,6 +1,8 @@
 import socket
 import time
 
+import messages_pb2
+
 
 class RobotClient():
     history_period = 5
