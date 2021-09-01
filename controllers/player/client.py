@@ -41,4 +41,6 @@ if __name__ == '__main__':
     client = RobotClient(host, port, verbosity)
     client.connect_client()
 
-    print(client.is_ok())
+    while client.is_ok():
+        request = client.build_request_message()
+        client.send_request(request)
