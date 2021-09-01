@@ -1,0 +1,11 @@
+default message:
+
+b'\x00\x00\x000'
+b'\n\x06\n\x04Neck\n\x0f\n\x04Head\x11\x9a\x99\x99\x99\x99\x99\xe9?2\t\n\x05NeckS\x10\x082\n\n\x06Camera\x10\x10'
+
+message with actuator_request.SerializeToString()
+b'\n\x0f\n\x04Neck\x11\x9a\x99\x99\x99\x99\x99\xf9?\n\x0f\n\x04Head\x11\x9a\x99\x99\x99\x99\x99\xe9?2\t\n\x05NeckS\x10\x082\n\n\x06Camera\x10\x10'
+
+message with text_format.MessageToBytes(actuator_request):
+b'motor_positions {\n  name: "Neck"\n  position: 1.6\n}\nmotor_positions {\n  name: "Head"\n  position: 0.8\n}\nsensor_time_steps {\n  name: "NeckS"\n  timeStep: 8\n}\nsensor_time_steps {\n  name: "Camera"\n  timeStep: 16\n}\n'
+
