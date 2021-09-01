@@ -2,8 +2,6 @@ import socket
 import time
 import struct
 import messages_pb2
-
-
 from google.protobuf import text_format
 
 
@@ -94,7 +92,6 @@ class RobotClient():
         pass
 
     def build_request_message(self, path=""):
-        path = "actuator_requests.txt"
         with open(path, "rb") as fd:
             actuator_request = messages_pb2.ActuatorRequests()
             text_format.Parse(fd.read(), actuator_request)
