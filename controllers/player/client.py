@@ -35,12 +35,15 @@ if __name__ == '__main__':
         else:
             usage("Unexpected additional argument: " + current_arg)
 
-    if (port == -1):
+    if port == -1:
         usage("Missing arguments")
 
     client = RobotClient(host, port, verbosity)
     client.connect_client()
 
     while client.is_ok():
-        request = client.build_request_message()
-        client.send_request(request)
+        try:
+            request = client.build_request_message("actuator_requests.txt")
+            client.send_request(request)
+        except Exception as e:
+            print(e)
