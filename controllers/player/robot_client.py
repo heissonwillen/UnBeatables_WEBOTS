@@ -85,8 +85,23 @@ class RobotClient():
     def is_ok(self):
         return self.socket_fd != -1
 
-    def receive_data(self):
-        pass
+    def receive(self):
+        msg_size = self.socket_fd.recv(4)
+        msg_size = struct.unpack(">L", msg_size)[0]
+
+        data = bytearray()
+        while len(data) < msg_size:
+            packet = self.socket_fd.recv(msg_size - len(data))
+            if not packet:
+                return None
+            data.extend(packet)
+
+        sensor_measurements = messages_pb2.SensorMeasurements()
+        sensor_measurements.ParseFromString(data)
+
+        print(sensor_measurements)
+
+        return data
 
     def update_history(self):
         pass

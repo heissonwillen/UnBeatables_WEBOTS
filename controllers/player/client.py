@@ -45,5 +45,7 @@ if __name__ == '__main__':
         try:
             request = client.build_request_message("actuator_requests.txt")
             client.send_request(request)
+            client.receive()
+            break
         except Exception as e:
             print(e)
