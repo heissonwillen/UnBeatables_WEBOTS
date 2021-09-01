@@ -44,16 +44,16 @@ class RobotClient():
         if not connected:
             if self.verbosity > 0:
                 print(
-                    "Failed to connect after {attempt} attempts. Giving up on connection")
+                    f"Failed to connect after {attempt} attempts. Giving up on connection")
                 self.disconnect_client()
             return False
 
         answer = self.socket_fd.recv(8).decode("utf-8")
         if self.verbosity >= 4:
-            print("Welcome message: {answer}")
-        if not "Welcome" in answer:
+            print(f"Welcome message: {answer}")
+        if answer != "Welcome\0":
             if self.verbosity > 0:
-                if "Refused" in answer:
+                if answer == "Refused\0":
                     print(
                         f"Connection to {self.host}:{self.port} refused: your IP address is not allowed in the game.json configuration file.")
                 else:
@@ -98,6 +98,16 @@ class RobotClient():
 
         sensor_measurements = messages_pb2.SensorMeasurements()
         sensor_measurements.ParseFromString(answer)
+
+        if self.verbosity >= 2:
+            # print messages
+            pass
+        if self.verbosity >= 3:
+            # update history
+            pass
+        if self.verbosity >= 4:
+            # print sensor measurements
+            pass
 
         return sensor_measurements
 
