@@ -1,7 +1,10 @@
 import socket
 import time
-
+import struct
 import messages_pb2
+
+
+from google.protobuf import text_format
 
 
 class RobotClient():
@@ -70,8 +73,16 @@ class RobotClient():
         self.socket_fd.close()
         self.socket_fd = -1
 
-    def send_request(self):
-        pass
+    def send_request(self, actuator_request):
+        if self.socket_fd == -1:
+            raise Exception("RobotClient is not connected")
+
+        # Need refactoring
+        try:
+            size = struct.pack(">L", len(actuator_request))
+            self.socket_fd.send(size + actuator_request)
+        except:
+            self.disconnect_client()
 
     def is_ok(self):
         return self.socket_fd != -1
@@ -82,14 +93,10 @@ class RobotClient():
     def update_history(self):
         pass
 
-    def build_reques_message(self, path):
-        # f = open('a.txt', 'r')
-        # address_book = addressbook_pb2.AddressBook() # replace with your own message
-        # text_format.Parse(f.read(), address_book)
-        # f.close()
+    def build_request_message(self, path=""):
+        path = "actuator_requests.txt"
+        with open(path, "rb") as fd:
+            actuator_request = messages_pb2.ActuatorRequests()
+            text_format.Parse(fd.read(), actuator_request)
 
-        # f = open('b.txt', 'w')
-        # f.write(text_format.MessageToString(address_book))
-        # f.close()
-        with open(path, "r") as actuator_request_file:
-            pass
+        return actuator_request.SerializeToString()
