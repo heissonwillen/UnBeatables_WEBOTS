@@ -1,6 +1,9 @@
+from os import pipe
 import sys
 
 from robot_client import *
+import numpy as np
+import cv2
 
 
 def usage(error_msg=None):
@@ -35,12 +38,21 @@ if __name__ == '__main__':
         else:
             usage("Unexpected additional argument: " + current_arg)
 
-    if (port == -1):
+    if port == -1:
         usage("Missing arguments")
 
     client = RobotClient(host, port, verbosity)
     client.connect_client()
 
     while client.is_ok():
-        request = client.build_request_message()
-        client.send_request(request)
+        try:
+            request = client.build_request_message("actuator_requests.txt")
+            client.send_request(request)
+            sensor_measurements = client.receive()
+            for camera in sensor_measurements.cameras:
+                img_array = np.frombuffer(camera.image, np.uint8).reshape(
+                    camera.height, camera.width, 3)
+                cv2.imshow('image', img_array)
+                cv2.waitKey(0)
+        except Exception as e:
+            print(e)
